@@ -11,9 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 
-/**
- * Created by Jack on 23/02/2015.
- */
+
 public abstract class HexUtils {
     /**
      * This returns a list of directions ordered by best guess direction first
@@ -60,7 +58,7 @@ public abstract class HexUtils {
 
     }
 
-    public static <T>  LinkedList<HexTile<T>> getShortestPath(HexTile<T> start, HexTile<T> finish, HexFilter<T> filter, HexCost<T> travelWeight) {
+    public static <T>  HexPath<T> getShortestPath(HexTile<T> start, HexTile<T> finish, HexFilter<T> filter, HexCost<T> travelWeight) {
         return new ShortestPath<>(start, finish, filter,travelWeight).getShortestPath();
     }
 
@@ -92,7 +90,7 @@ public abstract class HexUtils {
             weight = travelWeight;
         }
 
-        public LinkedList<HexTile<T>> getShortestPath() {
+        public HexPath<T> getShortestPath() {
             updateNode(START, START, 0, HexDirection.Center);
             while (!frontier.isEmpty()) {
                 A_StarNode<T> current = frontier.poll();
@@ -109,12 +107,12 @@ public abstract class HexUtils {
             }
             A_StarNode node = map.get(GOAL);
             if (node != null) {
-                LinkedList<HexTile<T>> path = new LinkedList<>();
+                HexPath<T> path = new HexPath<>();
                 while (node.parent != node.visitingFrom) {
-                    path.addFirst(node.parent);
+                    path.addFirst(node.parent,node.steps);
                     node = map.get(node.visitingFrom);
                 }
-                path.addFirst(START);
+                path.addFirst(START,0);
                 return path;
             } else {
                 return null;

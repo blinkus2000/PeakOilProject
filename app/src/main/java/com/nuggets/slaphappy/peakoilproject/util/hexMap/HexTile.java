@@ -49,6 +49,10 @@ public class HexTile <T> implements Location {
         return directions;
     }
 
-
-
+    @Override
+    public String toString() {
+        return "HexTile{" +
+                "loc=" + loc +
+                '}';
+    }
 }
