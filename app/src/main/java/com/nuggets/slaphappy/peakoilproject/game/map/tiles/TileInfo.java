@@ -45,7 +45,7 @@ public class TileInfo {
         private final boolean isLand;
         TileType(Fraction productionRatio,int color,int count){
             this(productionRatio,color,count,true);
-        }//
+        }
         TileType(Fraction productionRatio,int color,int count, boolean isLand){
             this.productionRatio = productionRatio;
             this.color = color;
@@ -61,7 +61,7 @@ public class TileInfo {
         }
 
         public int initCap() {
-            return isLand||this==Fracked?0:1;
+            return !isLand||this==Fracked?0:1;
         }
     }
 }

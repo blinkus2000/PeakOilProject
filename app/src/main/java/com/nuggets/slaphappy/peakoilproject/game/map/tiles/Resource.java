@@ -5,7 +5,7 @@ package com.nuggets.slaphappy.peakoilproject.game.map.tiles;
  * PeakOilProject
  * Created by Jack on 02/03/2015.
  */
-public class Resource {
+public abstract class Resource {
     protected Used used = new Used();
     protected Available avail = new Available();
     public class Used{
