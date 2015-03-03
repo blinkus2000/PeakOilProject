@@ -5,11 +5,11 @@ import java.util.HashMap;
 /**
  * Created by Jack on 18/02/2015.
  */
-public abstract class State {
-    protected HashMap<ActionItem,Transition> transitionMap = new HashMap<>();
-    public final State doAction(StateMachine parent, ActionItem item) throws StateMachineException {
+public abstract class State<T extends ActionItem> {
+    protected HashMap<T,Transition<T>> transitionMap = new HashMap<>();
+    public final State doAction(StateMachine<T> parent, T item) throws StateMachineException {
         try {
-            Transition transition = transitionMap.get(item);
+            Transition<T> transition = transitionMap.get(item);
             if(transition == null){
                 throw new StateMachineException("Illegal Action: "+ item+ " for State: "+this);
             }
@@ -21,12 +21,12 @@ public abstract class State {
             item.cleanup();
         }
     }
-    final void doOnExit(StateMachine parent){
+    final void doOnExit(StateMachine<T> parent){
         if(onExit(parent)){
             parent.fireOnExit(this);
         }
     }
-    final void doOnEnter(StateMachine parent,State oldState){
+    final void doOnEnter(StateMachine<T> parent,State<T> oldState){
         if(onEnter(parent)){
             parent.fireOnEnter(this);
         }
@@ -35,13 +35,13 @@ public abstract class State {
      * Override this to execute on state exit code, return true if you want the event broadcast
      *
      * */
-    protected boolean onExit(StateMachine parent){return false;}
+    protected boolean onExit(StateMachine<T> parent){return false;}
     /**
      * Override this to execute on state entry code, return true if you want the event broadcast
      *
      * */
-    protected boolean onEnter(StateMachine parent){return false;}
-    public final void registerTransition(ActionItem item, Transition transition){
+    protected boolean onEnter(StateMachine<T> parent){return false;}
+    public final void registerTransition(T item, Transition<T> transition){
         transitionMap.put(item,transition);
     }
 }

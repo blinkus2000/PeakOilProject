@@ -6,31 +6,31 @@ import com.nuggets.slaphappy.peakoilproject.util.stateMachine.eventDispatch.Prop
 /**
  * Created by Jack on 18/02/2015.
  */
-public abstract class StateMachine {
-    State currentState = null;
+public abstract class StateMachine<T extends ActionItem> {
+    State<T> currentState = null;
     PropertyChangeDispatch dispatch;
 
     public StateMachine() {
         dispatch = new PropertyChangeDispatch(this);
     }
 
-    public final synchronized void doAction(ActionItem item) throws StateMachineException{
+    public final synchronized void doAction(T item) throws StateMachineException{
         if(currentState == null){
             currentState = getInitialState();
         }
         currentState = currentState.doAction(this,item);
     }
-    public abstract State getInitialState();
+    public abstract State<T> getInitialState();
 
-    public final synchronized State getCurrentState(){
+    public final synchronized State<T> getCurrentState(){
         return currentState;
     }
 
-    final void fireOnEnter(State newState) {
+    final void fireOnEnter (State<T> newState) {
         dispatch.fireOnEnter( newState);
     }
 
-    final void fireOnExit(State oldState) {
+    final void fireOnExit (State<T> oldState) {
         dispatch.fireOnExit(oldState);
     }
 
@@ -38,7 +38,7 @@ public abstract class StateMachine {
         dispatch.addPropertyChangeListener(listener);
     }
 
-    public void fireTransition( State newState, ActionItem item) {
+    public void fireTransition( State<T> newState, ActionItem item) {
         dispatch.fireTransition(  newState,  item);
     }
     public void shutdown(){

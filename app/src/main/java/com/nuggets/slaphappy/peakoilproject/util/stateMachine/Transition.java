@@ -1,15 +1,13 @@
 package com.nuggets.slaphappy.peakoilproject.util.stateMachine;
 
-/**
- * Created by Jack on 18/02/2015.
- */
-public abstract class Transition  {
 
-    protected State newState = null;
-    protected State oldState = null;
+public abstract class Transition<T extends ActionItem>  {
+
+    protected State<T> newState = null;
+    protected State<T> oldState = null;
 
 
-    public final State transition(StateMachine parent,State oldState, ActionItem item)throws StateMachineException {
+    public final State<T> transition(StateMachine<T> parent,State<T> oldState, T item)throws StateMachineException {
         this.newState = null;
         this.oldState = oldState;
         newState = handle(item);
@@ -17,7 +15,7 @@ public abstract class Transition  {
         return newState;
     }
 
-    protected abstract State handle(ActionItem item);
+    protected abstract State<T> handle(T item);
 
 
 }
