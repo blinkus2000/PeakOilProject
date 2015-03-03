@@ -11,7 +11,7 @@ import com.nuggets.slaphappy.peakoilproject.util.stateMachine.StateMachine;
  */
 public class PeakOilEngine extends StateMachine<PeakOilEngine.PhaseActionItem> {
     @Override
-    public State<PhaseActionItem> getInitialState() {
+    protected State<PhaseActionItem> getInitialState() {
         return null;
     }
     public interface PhaseActionItem extends ActionItem{}

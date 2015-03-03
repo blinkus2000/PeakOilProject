@@ -19,6 +19,12 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
     final PeakOilEngine parent;
     public PlayerTurnMachine(LinkedList<Player> playerList, PeakOilEngine parent) {
         this.parent = parent;
+        buildStateMachine(playerList);
+    }
+    /*
+    * Register action/transition pairs with the states ...
+    * */
+    private void buildStateMachine(LinkedList<Player> playerList) {
         for(int i = 0 ; i < playerList.size() ; i ++){
             final int nextIndex = (i + 1)%players.size();
             final PlayerTurn state = new PlayerTurn(playerList.get(i));
@@ -28,7 +34,13 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
             players.add(state);
         }
     }
-    public class DispatchTransition extends Transition<TurnAction>{
+
+    /*
+     * Inner Data classes ...
+     *
+     * */
+
+    private class DispatchTransition extends Transition<TurnAction>{
         final PlayerTurn state;
 
         public DispatchTransition(PlayerTurn state) {
@@ -45,14 +57,14 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
             return state;
         }
     }
-    public abstract class TurnCompleteTransition extends Transition<TurnAction>{
+    private abstract class TurnCompleteTransition extends Transition<TurnAction>{
         final int nextIndex;
 
         public TurnCompleteTransition(int nextIndex) {
             this.nextIndex = nextIndex;
         }
     }
-    public class EndTurnTransition extends TurnCompleteTransition{
+    private class EndTurnTransition extends TurnCompleteTransition{
 
         public EndTurnTransition(int nextIndex) {
             super(nextIndex);
@@ -64,7 +76,7 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
             return players.get(nextIndex);
         }
     }
-    public class PassTransition extends TurnCompleteTransition{
+    private class PassTransition extends TurnCompleteTransition{
 
         public PassTransition(int nextIndex) {
             super(nextIndex);
@@ -86,17 +98,34 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
             }
         }
     }
+
+
+    /*
+    * Override and utility methods ...
+    * */
+
+    private final PlayerTurn getCurrentPlayer(){
+        return (PlayerTurn) getCurrentState();
+    }
     @Override
-    public State<TurnAction> getInitialState() {
+    protected State<TurnAction> getInitialState() {
         return players.getFirst();
     }
-    public enum TurnType implements TurnAction{
+    private enum TurnType implements TurnAction{
         END,PASS;
         TurnType(){}
 
         @Override
         public void cleanup() {}
     }
+
+
+
+    /*
+    * Public Methods ....
+    * */
+
+
     public void currentPlayerPass() throws StateMachineException {
         getCurrentState().doAction(this,TurnType.PASS);
     }
@@ -107,7 +136,5 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
         getCurrentPlayer().setNextAction(dispatchedAction);
         getCurrentState().doAction(this,getCurrentPlayer().getDispatchedAction());
     }
-    private final PlayerTurn getCurrentPlayer(){
-        return (PlayerTurn) getCurrentState();
-    }
+
 }

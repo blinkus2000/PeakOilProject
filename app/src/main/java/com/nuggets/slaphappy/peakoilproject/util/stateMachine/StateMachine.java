@@ -20,7 +20,7 @@ public abstract class StateMachine<T extends ActionItem> {
         }
         currentState = currentState.doAction(this,item);
     }
-    public abstract State<T> getInitialState();
+    protected abstract State<T> getInitialState();
 
     public final synchronized State<T> getCurrentState(){
         return currentState;

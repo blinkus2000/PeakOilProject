@@ -7,15 +7,15 @@ import java.util.HashMap;
  */
 public abstract class State<T extends ActionItem> {
     protected HashMap<T,Transition<T>> transitionMap = new HashMap<>();
-    public final State doAction(StateMachine<T> parent, T item) throws StateMachineException {
+    public final State<T> doAction(StateMachine<T> parent, T item) throws StateMachineException {
         try {
             Transition<T> transition = transitionMap.get(item);
             if(transition == null){
                 throw new StateMachineException("Illegal Action: "+ item+ " for State: "+this);
             }
             doOnExit( parent);
-            final State newState = transition.transition(parent,this,item);
-            newState.doOnEnter( parent,this);
+            final State<T> newState = transition.transition(parent,this,item);
+            newState.doOnEnter( parent);
             return newState;
         } finally {
             item.cleanup();
@@ -26,7 +26,7 @@ public abstract class State<T extends ActionItem> {
             parent.fireOnExit(this);
         }
     }
-    final void doOnEnter(StateMachine<T> parent,State<T> oldState){
+    final void doOnEnter(StateMachine<T> parent){
         if(onEnter(parent)){
             parent.fireOnEnter(this);
         }
