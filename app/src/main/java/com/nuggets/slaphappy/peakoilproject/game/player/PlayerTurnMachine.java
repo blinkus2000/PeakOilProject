@@ -1,10 +1,13 @@
 package com.nuggets.slaphappy.peakoilproject.game.player;
 
+import android.util.Log;
+
 import com.nuggets.slaphappy.peakoilproject.game.PeakOilEngine;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.State;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.StateMachine;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.StateMachineException;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.Transition;
+import com.nuggets.slaphappy.peakoilproject.util.stateMachine.eventDispatch.EventDispatchListener;
 
 import java.util.LinkedList;
 
@@ -20,6 +23,7 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
     public PlayerTurnMachine(LinkedList<Player> playerList, PeakOilEngine parent) {
         this.parent = parent;
         buildStateMachine(playerList);
+        this.addPropertyChangeListener(EventDispatchListener.Logger());
     }
     /*
     * Register action/transition pairs with the states ...
@@ -28,8 +32,7 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
         for(int i = 0 ; i < playerList.size() ; i ++){
             final int nextIndex = (i + 1)%players.size();
             final PlayerTurn state = new PlayerTurn(playerList.get(i));
-            state.registerTransition(TurnType.END,new EndTurnTransition(nextIndex));
-            state.registerTransition(TurnType.PASS,new PassTransition(nextIndex));
+            state.registerTransition(TurnType.END,new EndTurnTransition(state,nextIndex));
             state.registerTransition(state.getDispatchedAction(),new DispatchTransition(state));
             players.add(state);
         }
@@ -51,53 +54,48 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
         protected State<TurnAction> handle(TurnAction item) {
             try {
                 passes = 0;
-                PlayerTurnMachine.this.parent.doAction(state.getNextAction());
+                parent.doAction(state.getNextAction());
+                state.setTakenActionThisTurn(true);
             } catch (StateMachineException e) {
+                Log.e("PKO","Error dispatching to PeakOilEngine",e);
             }
             return state;
         }
     }
-    private abstract class TurnCompleteTransition extends Transition<TurnAction>{
-        final int nextIndex;
 
-        public TurnCompleteTransition(int nextIndex) {
+    private class EndTurnTransition extends Transition<TurnAction>{
+
+        final int nextIndex;
+        private final PlayerTurn state;
+
+        public EndTurnTransition(PlayerTurn state, int nextIndex) {
+            this.state = state;
             this.nextIndex = nextIndex;
         }
-    }
-    private class EndTurnTransition extends TurnCompleteTransition{
-
-        public EndTurnTransition(int nextIndex) {
-            super(nextIndex);
-        }
 
         @Override
         protected State<TurnAction> handle(TurnAction item) {
-            passes = 0;
-            return players.get(nextIndex);
-        }
-    }
-    private class PassTransition extends TurnCompleteTransition{
-
-        public PassTransition(int nextIndex) {
-            super(nextIndex);
-        }
-
-        @Override
-        protected State<TurnAction> handle(TurnAction item) {
-            passes++;
-            if(passes>=players.size()){
+            if (state.isTakenActionThisTurn()) {
                 passes = 0;
-                try {
-                    PlayerTurnMachine.this.parent.doAction(PeakOilEngine.PhaseAction.ADVANCE);
-                } catch (StateMachineException e) {
-                    e.printStackTrace();
-                }
-                return players.get(0);
-            }else{
                 return players.get(nextIndex);
+            }else{
+                //this is really just a pass... we can probably do away with the pass call altogether.
+                passes++;
+                if(passes>=players.size()){
+                    passes = 0;
+                    try {
+                        parent.doAction(PeakOilEngine.PhaseAction.ADVANCE);
+                    } catch (StateMachineException e) {
+                        Log.e("PKO","Error advancing PeakOilEngine",e);
+                    }
+                    return players.get(0);
+                }else{
+                    return players.get(nextIndex);
+                }
             }
         }
     }
+
 
 
     /*
@@ -112,7 +110,7 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
         return players.getFirst();
     }
     private enum TurnType implements TurnAction{
-        END,PASS;
+        END;
         TurnType(){}
 
         @Override
@@ -125,10 +123,6 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
     * Public Methods ....
     * */
 
-
-    public void currentPlayerPass() throws StateMachineException {
-        getCurrentState().doAction(this,TurnType.PASS);
-    }
     public void currentPlayerEndTurn() throws StateMachineException {
         getCurrentState().doAction(this,TurnType.END);
     }

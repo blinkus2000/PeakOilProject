@@ -25,4 +25,9 @@ public abstract class DispatchEvent<Old,New> extends PropertyChangeEvent {
             return (StateMachine)super.getSource();
         }
         public abstract void getHandledBy(EventHandler handler);
+        public String toString(){
+            String oldValue = getOldValue()==null?" oldValue = null":getOldValue().getClass().getSimpleName()+" = "+getOldValue();
+            String newValue = getNewValue()==null?" newValue = null":getNewValue().getClass().getSimpleName()+" = "+getNewValue();
+            return "["+getClass().getSimpleName()+"] ["+ oldValue + "] [" + newValue+"]";
+        }
     }

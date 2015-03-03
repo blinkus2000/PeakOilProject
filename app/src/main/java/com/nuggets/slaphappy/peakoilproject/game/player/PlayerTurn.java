@@ -12,6 +12,7 @@ public class PlayerTurn extends State<TurnAction> {
     final Player player;
     private PeakOilEngine.PhaseActionItem nextAction = null;
     private final DispatchedAction dispatchedAction;
+    private boolean takenActionThisTurn = false;
     public PlayerTurn(Player player) {
         this.player = player;
         dispatchedAction = new DispatchedAction();
@@ -36,5 +37,13 @@ public class PlayerTurn extends State<TurnAction> {
 
     public DispatchedAction getDispatchedAction() {
         return dispatchedAction;
+    }
+
+    public boolean isTakenActionThisTurn() {
+        return takenActionThisTurn;
+    }
+
+    public void setTakenActionThisTurn(boolean takenActionThisTurn) {
+        this.takenActionThisTurn = takenActionThisTurn;
     }
 }

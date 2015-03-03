@@ -1,5 +1,7 @@
 package com.nuggets.slaphappy.peakoilproject.util.stateMachine.eventDispatch;
 
+import android.util.Log;
+
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.ActionItem;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.State;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.StateMachine;
@@ -59,6 +61,7 @@ public class PropertyChangeDispatch extends PropertyChangeSupport{
                     asyncFire(workQueue.take());
                 } catch (InterruptedException e) {
                 } catch(Exception e){
+                    Log.e("PKO","unhandled exception dispatching",e);
                   break;
                 } finally {
                     synchronized (eventLock){
