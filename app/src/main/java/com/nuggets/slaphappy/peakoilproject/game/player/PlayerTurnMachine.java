@@ -77,19 +77,22 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
         protected State<TurnAction> handle(TurnAction item) {
             if (state.isTakenActionThisTurn()) {
                 passes = 0;
+                state.setTakenActionThisTurn(false); //reset this for next round
                 return players.get(nextIndex);
             }else{
-                //this is really just a pass... we can probably do away with the pass call altogether.
+                //this is just a pass, the player took no actions other than passing....
                 passes++;
                 if(passes>=players.size()){
                     passes = 0;
                     try {
+                        //This represents a new phase so we start rotating at the first player again
                         parent.doAction(PeakOilEngine.PhaseAction.ADVANCE);
                     } catch (StateMachineException e) {
                         Log.e("PKO","Error advancing PeakOilEngine",e);
                     }
-                    return players.get(0);
+                    return players.getFirst();
                 }else{
+                    //Just continue on to the next player like normal.
                     return players.get(nextIndex);
                 }
             }
