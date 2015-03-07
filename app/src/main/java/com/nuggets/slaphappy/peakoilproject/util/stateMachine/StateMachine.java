@@ -15,14 +15,15 @@ public abstract class StateMachine<T extends ActionItem> {
     }
 
     public final synchronized void doAction(T item) throws StateMachineException{
-        if(currentState == null){
-            currentState = getInitialState();
-        }
-        currentState = currentState.doAction(this,item);
+
+        currentState = getCurrentState().doAction(this,item);
     }
     protected abstract State<T> getInitialState();
 
     public final synchronized State<T> getCurrentState(){
+        if(currentState == null){
+            currentState = getInitialState();
+        }
         return currentState;
     }
 

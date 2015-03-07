@@ -15,4 +15,11 @@ public class Player {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "playerID=" + playerID +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

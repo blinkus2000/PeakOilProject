@@ -2,7 +2,7 @@ package com.nuggets.slaphappy.peakoilproject.game.player;
 
 import android.util.Log;
 
-import com.nuggets.slaphappy.peakoilproject.game.PeakOilEngine;
+import com.nuggets.slaphappy.peakoilproject.game.PhaseEngine;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.State;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.StateMachine;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.StateMachineException;
@@ -19,8 +19,8 @@ import java.util.LinkedList;
 public class PlayerTurnMachine extends StateMachine<TurnAction> {
     final LinkedList<PlayerTurn> players = new LinkedList<>();
     protected int passes = 0;
-    final PeakOilEngine parent;
-    public PlayerTurnMachine(LinkedList<Player> playerList, PeakOilEngine parent) {
+    final PhaseEngine parent;
+    public PlayerTurnMachine(LinkedList<Player> playerList, PhaseEngine parent) {
         this.parent = parent;
         buildStateMachine(playerList);
         this.addPropertyChangeListener(EventDispatchListener.Logger());
@@ -30,7 +30,7 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
     * */
     private void buildStateMachine(LinkedList<Player> playerList) {
         for(int i = 0 ; i < playerList.size() ; i ++){
-            final int nextIndex = (i + 1)%players.size();
+            final int nextIndex = (i + 1)%playerList.size();
             final PlayerTurn state = new PlayerTurn(playerList.get(i));
             state.registerTransition(TurnType.END,new EndTurnTransition(state,nextIndex));
             state.registerTransition(state.getDispatchedAction(),new DispatchTransition(state));
@@ -86,7 +86,7 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
                     passes = 0;
                     try {
                         //This represents a new phase so we start rotating at the first player again
-                        parent.doAction(PeakOilEngine.PhaseAction.ADVANCE);
+                        parent.advance();
                     } catch (StateMachineException e) {
                         Log.e("PKO","Error advancing PeakOilEngine",e);
                     }
@@ -105,7 +105,7 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
     * Override and utility methods ...
     * */
 
-    private final PlayerTurn getCurrentPlayer(){
+    private final PlayerTurn getCurrentPlayerState(){
         return (PlayerTurn) getCurrentState();
     }
     @Override
@@ -125,13 +125,13 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
     /*
     * Public Methods ....
     * */
-
+    public final Player getCurrentPlayer(){return getCurrentPlayerState().player;}
     public void currentPlayerEndTurn() throws StateMachineException {
-        getCurrentState().doAction(this,TurnType.END);
+        doAction(TurnType.END);
     }
-    public void currentPlayerDoAction(PeakOilEngine.PhaseActionItem dispatchedAction) throws StateMachineException {
-        getCurrentPlayer().setNextAction(dispatchedAction);
-        getCurrentState().doAction(this,getCurrentPlayer().getDispatchedAction());
+    public void currentPlayerDoAction(PhaseEngine.PhaseActionItem dispatchedAction) throws StateMachineException {
+        getCurrentPlayerState().setNextAction(dispatchedAction);
+       doAction(getCurrentPlayerState().getDispatchedAction());
     }
 
 }

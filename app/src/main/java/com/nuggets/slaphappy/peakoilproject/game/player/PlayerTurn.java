@@ -1,6 +1,6 @@
 package com.nuggets.slaphappy.peakoilproject.game.player;
 
-import com.nuggets.slaphappy.peakoilproject.game.PeakOilEngine;
+import com.nuggets.slaphappy.peakoilproject.game.PhaseEngine;
 import com.nuggets.slaphappy.peakoilproject.util.stateMachine.State;
 
 /**
@@ -10,7 +10,7 @@ import com.nuggets.slaphappy.peakoilproject.util.stateMachine.State;
  */
 public class PlayerTurn extends State<TurnAction> {
     final Player player;
-    private PeakOilEngine.PhaseActionItem nextAction = null;
+    private PhaseEngine.PhaseActionItem nextAction = null;
     private final DispatchedAction dispatchedAction;
     private boolean takenActionThisTurn = false;
     public PlayerTurn(Player player) {
@@ -18,7 +18,7 @@ public class PlayerTurn extends State<TurnAction> {
         dispatchedAction = new DispatchedAction();
     }
     public class DispatchedAction implements TurnAction{
-        public PeakOilEngine.PhaseActionItem getDispatchedAction(){
+        public PhaseEngine.PhaseActionItem getDispatchedAction(){
             return nextAction;
         }
         @Override
@@ -27,11 +27,11 @@ public class PlayerTurn extends State<TurnAction> {
         }
     }
 
-    public PeakOilEngine.PhaseActionItem getNextAction() {
+    public PhaseEngine.PhaseActionItem getNextAction() {
         return nextAction;
     }
 
-    public void setNextAction(PeakOilEngine.PhaseActionItem nextAction) {
+    public void setNextAction(PhaseEngine.PhaseActionItem nextAction) {
         this.nextAction = nextAction;
     }
 
