@@ -101,7 +101,7 @@ public class StateMachineTest extends TestCase {
         states = null;
     }
     public void testGetCurrentStateAdvanceSequential() throws Exception {
-        assertNull(underTest.getCurrentState());
+        assertNotNull(underTest.getCurrentState());
         assertEquals(0,onEntryCount);
         assertEquals(0,onExitCount);
         assertEquals(0,onTransitionCount);
