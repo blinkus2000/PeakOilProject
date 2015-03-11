@@ -38,6 +38,10 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
         }
     }
 
+    public int playerCount() {
+        return players.size();
+    }
+
     /*
      * Inner Data classes ...
      *
@@ -126,12 +130,14 @@ public class PlayerTurnMachine extends StateMachine<TurnAction> {
     * Public Methods ....
     * */
     public final Player getCurrentPlayer(){return getCurrentPlayerState().player;}
-    public void currentPlayerEndTurn() throws StateMachineException {
+    public void currentPlayerEndPhase() throws StateMachineException {
         doAction(TurnType.END);
     }
+
     public void currentPlayerDoAction(PhaseEngine.PhaseActionItem dispatchedAction) throws StateMachineException {
         getCurrentPlayerState().setNextAction(dispatchedAction);
-       doAction(getCurrentPlayerState().getDispatchedAction());
+        doAction(getCurrentPlayerState().getDispatchedAction());
     }
+
 
 }

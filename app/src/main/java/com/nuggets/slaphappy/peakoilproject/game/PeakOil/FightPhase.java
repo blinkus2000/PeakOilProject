@@ -8,10 +8,10 @@ import com.nuggets.slaphappy.peakoilproject.util.stateMachine.StateMachine;
  * PeakOilProject
  * Created by Jack on 09/03/2015.
  */
-public class FightPhase extends PhaseEngine.PhaseState {
+public class FightPhase extends PeakOilPhase {
     @Override
     protected boolean onExit(StateMachine<PhaseEngine.PhaseActionItem> parent) {
-        ((PeakOilEngine)parent).reset();
+        master.resetPhase();
         return true;
     }
 }

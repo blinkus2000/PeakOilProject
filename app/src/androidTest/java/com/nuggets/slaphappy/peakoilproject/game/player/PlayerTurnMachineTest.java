@@ -19,7 +19,7 @@ public class PlayerTurnMachineTest extends TestCase {
             //all players pass
             for (Player player : players) {
                 assertEquals(player,underTest.getCurrentPlayer());
-                underTest.currentPlayerEndTurn();
+                underTest.currentPlayerEndPhase();
             }
         }
     }
@@ -30,13 +30,13 @@ public class PlayerTurnMachineTest extends TestCase {
             for (Player player : players) {
                 assertEquals(player,underTest.getCurrentPlayer());
                 underTest.currentPlayerDoAction(DoAction.DO_ACTION);
-                underTest.currentPlayerEndTurn();
+                underTest.currentPlayerEndPhase();
             }
             assertEquals(testState,parentEngine.getCurrentState());
             //once all players pass the test state will advance
             for (Player player : players) {
                 assertEquals(player, underTest.getCurrentPlayer());
-                underTest.currentPlayerEndTurn();
+                underTest.currentPlayerEndPhase();
             }
         }
     }
@@ -49,13 +49,13 @@ public class PlayerTurnMachineTest extends TestCase {
                 if (player==players.getLast()) {
                     underTest.currentPlayerDoAction(DoAction.DO_ACTION);
                 }
-                underTest.currentPlayerEndTurn();
+                underTest.currentPlayerEndPhase();
             }
             assertEquals(testState,parentEngine.getCurrentState());
             //once all players pass the test state will advance
             for (Player player : players) {
                 assertEquals(player, underTest.getCurrentPlayer());
-                underTest.currentPlayerEndTurn();
+                underTest.currentPlayerEndPhase();
             }
         }
     }

@@ -14,7 +14,7 @@ public abstract class StateMachine<T extends ActionItem> {
         dispatch = new PropertyChangeDispatch(this);
     }
 
-    public final synchronized void doAction(T item) throws StateMachineException{
+    public synchronized void doAction(T item) throws StateMachineException{
 
         currentState = getCurrentState().doAction(this,item);
     }
@@ -48,5 +48,9 @@ public abstract class StateMachine<T extends ActionItem> {
 
     public void waitForAllEventsDispatched() throws InterruptedException {
         dispatch.waitForAllEventsDispatched();
+    }
+
+    public final void reset() {
+        currentState = getInitialState();
     }
 }

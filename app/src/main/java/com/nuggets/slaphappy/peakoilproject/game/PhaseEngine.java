@@ -37,17 +37,17 @@ public class PhaseEngine extends StateMachine<PhaseEngine.PhaseActionItem> {
     }
 
     public interface PhaseActionItem extends ActionItem{}
-    private static enum PhaseAction implements PhaseActionItem{
-    ADVANCE;
+    public static enum PhaseAction implements PhaseActionItem{
+    ADVANCE,INNER_PASS;
         @Override
         public void cleanup() {
 
         }
+
     }
     public static abstract class PhaseState extends State<PhaseActionItem> {
 
     }
-
     private class AdvanceTransition extends Transition<PhaseActionItem>{
         final int parentStateIndex;
 

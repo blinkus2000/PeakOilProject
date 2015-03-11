@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 
 public class HexUtilsTest extends TestCase {
-    HexMap<Object> map;
+    HexMap<Object, HexTile<Object>> map;
     final HashSet<HexTile> skipping = new HashSet<>();
     private final HexCost<Object> defaultWeight = new HexCost<Object>() {
         @Override
@@ -22,7 +22,12 @@ public class HexUtilsTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         map = new HexMap<>(10,10);
-        map.fill();
+        map.fill(new HexMap.TileFactory<Object, HexTile<Object>>() {
+            @Override
+            public HexTile<Object> getTile(HexLoc loc) {
+                return new HexTile<>(loc);
+            }
+        });
         skipping.clear();
         hexFilter = new HexFilter<Object>() {
             @Override

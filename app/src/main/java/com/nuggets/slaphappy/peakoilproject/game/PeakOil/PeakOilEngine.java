@@ -27,17 +27,25 @@ public class PeakOilEngine extends PhaseEngine {
         //TODO: put all the tiles up in this shit
         return initMap;
     }
+    //called onExit() Produce and Develop
+    void calculateRange() {
+        //TODO: See Rules
+    }
+    //called onExit() FightPhase
+    void resetPhase() {
+        //TODO: See Rules
+    }
+    //called once onEnter() Produce and Develop sub state Rust and Mayhem
+    //this the rust portion
+    void rustAndMahem() {
+        //TODO: See rules
+    }
+    void explore(ExploreAndProspectPhase.Explore explore) {
 
-    public void calculateRange() {
-        //TODO: do this shit
-        // Calculate Range: increment or decrement if total increases or decreases respectively
     }
 
-    public void reset() {
-        //TODO: do this shit
-        /*
-        * Move all MP or Oil in MPU to MPA on same Space
-        * Remove 1 MP, 1 Oil in MPU, or 1 PC from each space with MPA > 0
-        * */
+
+    public int playerCount() {
+        return playerTurns.playerCount();
     }
 }

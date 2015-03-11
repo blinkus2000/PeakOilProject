@@ -7,7 +7,7 @@ import java.util.HashMap;
  */
 public abstract class State<T extends ActionItem> {
     protected HashMap<T,Transition<T>> transitionMap = new HashMap<>();
-    final State<T> doAction(StateMachine<T> parent, T item) throws StateMachineException {
+    public State<T> doAction(StateMachine<T> parent, T item) throws StateMachineException {
         try {
             Transition<T> transition = transitionMap.get(item);
             if(transition == null){
